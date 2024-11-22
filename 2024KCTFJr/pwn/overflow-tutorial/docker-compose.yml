@@ -1,0 +1,10 @@
+version: '3'
+services:
+  overflow-tutorial:
+    build: .
+    ulimits:
+      nproc: 65535
+      core: 0
+    ports:
+      - "20006:8080"
+    restart: unless-stopped

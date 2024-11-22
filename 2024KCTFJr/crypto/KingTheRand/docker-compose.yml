@@ -1,0 +1,10 @@
+version: '3'
+services:
+  king_the_rand:
+    build: .
+    ulimits:
+      nproc: 65535
+      core: 0
+    ports:
+      - "20002:8080"
+    restart: unless-stopped

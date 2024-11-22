@@ -1,0 +1,10 @@
+version: '3'
+services:
+  heap_tutorial:
+    build: .
+    ulimits:
+      nproc: 65535
+      core: 0
+    ports:
+      - "20007:8080"
+    restart: unless-stopped
