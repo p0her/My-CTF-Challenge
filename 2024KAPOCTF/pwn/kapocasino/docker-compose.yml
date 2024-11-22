@@ -1,0 +1,10 @@
+version: '3'
+services:
+  kapocasino:
+    build: .
+    ulimits:
+      nproc: 65535
+      core: 0
+    ports:
+      - "20010:8080"
+    restart: unless-stopped
