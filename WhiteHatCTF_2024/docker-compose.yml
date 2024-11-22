@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+    kanna:
+        build:
+            context: ./kanna/for_organizer
+            dockerfile: ./Dockerfile
+        ports:
+            - "30001:8080"
+        command:
+            - /start.sh
+    yuni:
+        build:
+            context: ./yuni/for_organizer
+            dockerfile: ./Dockerfile
+        ports:
+            - "30002:8080"
+        command:
+            - /start.sh
+    kinga:
+        build:
+            context: ./kinga/for_organizer
+            dockerfile: ./Dockerfile
+        ports:
+            - "30003:8080"
+        command:
+            - /start.sh
