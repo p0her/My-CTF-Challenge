@@ -1,0 +1,51 @@
+diff --git a/qiling/loader/elf.py b/qiling/loader/elf.py
+index 1a00bcec..8be543f5 100644
+--- a/qiling/loader/elf.py
++++ b/qiling/loader/elf.py
+@@ -5,9 +5,11 @@
+ 
+ import io
+ import os
++import random
++import time
+ 
+ from enum import IntEnum
+-from typing import AnyStr, Optional, Sequence, Mapping, Tuple
++from typing import AnyStr, Optional, Sequence, Mapping, Tuple, Union
+ 
+ from elftools.common.utils import preserve_stream_pos
+ from elftools.elf.constants import P_FLAGS, SH_FLAGS
+@@ -70,6 +72,7 @@ class QlLoaderELF(QlLoader):
+         super().__init__(ql)
+ 
+     def run(self):
++        random.seed(int(time.time()))
+         if self.ql.code:
+             self.ql.mem.map(self.ql.os.entry_point, self.ql.os.code_ram_size, info="[shellcode_stack]")
+ 
+@@ -286,11 +289,14 @@ class QlLoaderELF(QlLoader):
+ 
+             return top
+ 
+-        def __push_str(top: int, s: str) -> int:
++        def __push_str(top: int, s: Union[str, bytes]) -> int:
+             """A convinient method for writing a string to stack memory.
+             """
++            if isinstance(s, str):
++                return __push_bytes(top, s.encode('latin'))
+ 
+-            return __push_bytes(top, s.encode('latin'))
++            if isinstance(s, bytes):
++                return __push_bytes(top, s)
+ 
+         # write argc
+         elf_table.extend(self.ql.pack(len(argv)))
+@@ -316,7 +322,7 @@ class QlLoaderELF(QlLoader):
+         # add a nullptr sentinel
+         elf_table.extend(self.ql.pack(0))
+ 
+-        new_stack = randstraddr = __push_str(new_stack, 'a' * 16)
++        new_stack = randstraddr = __push_str(new_stack, random.randbytes(16))
+         new_stack = cpustraddr  = __push_str(new_stack, 'i686')
+         new_stack = execfn      = __push_str(new_stack, argv[0])
+ 
